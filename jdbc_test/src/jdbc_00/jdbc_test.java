@@ -13,7 +13,7 @@ import java.util.List;
 public class jdbc_test {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+		
 		final String driver = "org.mariadb.jdbc.Driver";
 		final String db_ip = "localhost";
 		final String db_port = "3306";

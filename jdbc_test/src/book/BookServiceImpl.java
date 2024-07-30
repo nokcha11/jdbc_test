@@ -25,11 +25,11 @@ public class BookServiceImpl implements BookService {
 				break;
 			case 2 :
 				System.out.println(" 2. 도서 정보 수정");
-				//updateMember();
+				updateBook();
 				break;
 			case 3 :
 				System.out.println("3. 도서 정보 삭제");
-				//deleteMember();
+				deleteBook();
 				break;
 			case 4 :
 				System.out.println("4. 도서 정보 출력(이름)");
@@ -69,7 +69,7 @@ public class BookServiceImpl implements BookService {
 		 return choice;
 		
 	}
-
+	// 도서정보 등록
 	public void insertBook() {
 		System.out.println("도서명을 입력하세요>>>>");
 		sc.nextLine();
@@ -111,11 +111,11 @@ public class BookServiceImpl implements BookService {
 			System.out.println("도서 등록에 실패하였습니다.");
 		}
 	}
-	
+	//도서정보 전체 출력
 	public void printAllBooks() {
 		List<HashMap<String, Object>> bookList = new ArrayList();
 		bookList = bookDAO.printAllBooks();
-		System.out.println("도서명\t저자\t출판사\t\t.l생성일자");
+		System.out.println("도서명\t저자\t출판사\t\t생성일자");
 		for (int i = 0; i < bookList.size(); i++) {
 			System.out.print(bookList.get(i).get("book_title")+"\t");
 			System.out.print(bookList.get(i).get("book_author")+"\t");
@@ -124,7 +124,7 @@ public class BookServiceImpl implements BookService {
 		}
 		
 	}
-	
+	// 도서정보 출력(이름)
 	public void printBook() {
 		
 		List<HashMap<String, Object>> bookList = new ArrayList();
@@ -139,6 +139,62 @@ public class BookServiceImpl implements BookService {
 			System.out.print(bookList.get(i).get("book_author")+"\t");
 			System.out.print(bookList.get(i).get("book_publisher")+"\t\t");
 			System.out.println(bookList.get(i).get("create_date")+"\t");
+			}
 		}
+	
+	// 도서정보 삭제
+	public void deleteBook() {
+		System.out.println("도서명을 입력하세요>>>>");
+		sc.nextLine();
+		String title = sc.nextLine(); // 도서명을 변수로 받아서
+		
+		
+		int resultChk = 0;
+		resultChk = bookDAO.deletetBook(title); // 할당받은 변수넣어준다. DAO에서는 다른 변수명으로해도 무방
+		if(resultChk >0 ) {
+			System.out.println("도서가 삭제되었습니다.");
+		} else {
+			System.out.println("도서 삭제에 실패하였습니다.");
 		}
+	
+	}
+	
+	// 도서정보 수정
+	public void updateBook() {
+		System.out.println("도서명을 입력하세요>>>>>>>");
+		
+		sc.nextLine();
+		String title = sc.nextLine();
+		
+		List<HashMap<String, Object>> bookList = new ArrayList();
+		// 서치할 printSearchBooks의 도서명을 검색하기때문에 
+		bookList = bookDAO.printSearchBooks(title);
+		System.out.println("도서명ID\t도서명\t저자\t출판사\t\t생성일자");
+		// Imp의 대문자 소문자와 맞아야 한다.
+		for (int i = 0; i < bookList.size(); i++) {
+			System.out.print(bookList.get(i).get("book_id")+"\t");
+			System.out.print(bookList.get(i).get("book_title")+"\t");
+			System.out.print(bookList.get(i).get("book_author")+"\t");
+			System.out.print(bookList.get(i).get("book_publisher")+"\t\t");
+			System.out.println(bookList.get(i).get("create_date")+"\t");
+		}
+		System.out.println("수정할 도서의 순번을 입력하세요>>>>");
+		// 몇번째 순번 입력받을지
+		int num = sc.nextInt();
+		// pk값인 book_id값으로 가져온다.
+		// 인덱스번호를 맞추기위해 -1로 맞춘다.
+		// <String, Object>>로 객체로 받았기 떄문에 타입변환을 해야한다.
+		int bookID = Integer.parseInt(bookList.get(num-1).get("book_id").toString());
+		System.out.println("변경될 도서명을 입력하세요>>>>>");
+		sc.nextLine();
+		String updateTitle = sc.nextLine();
+		
+		int resultChk = 0;
+		resultChk = bookDAO.updateBook(bookID, updateTitle);
+		if(resultChk >0 ) {
+			System.out.println("도서가 수정되었습니다.");
+		} else {
+			System.out.println("도서 수정에 실패하였습니다.");
+		}
+	}
  }
