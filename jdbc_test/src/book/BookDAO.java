@@ -86,6 +86,7 @@ public class BookDAO {
 		return resultChk;
 	}
 	
+	// 도서정보 전체 출력
 	public List <HashMap<String, Object>> printAllBooks() {
 		List <HashMap<String, Object>> bookList = new ArrayList();
 		try {
