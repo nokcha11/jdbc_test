@@ -187,11 +187,11 @@ public class MemberServiceImpl implements MemberService {
 			}
 			System.out.println("삭제할 회원명의 순번을 입력하세요>>>>");
 			// 몇번째 순번 입력받을지
-						int num = sc.nextInt();
-						// pk값인 member_id값으로 가져온다.
-						// 인덱스번호를 맞추기위해 -1로 맞춘다.
-						// <String, Object>>로 객체로 받았기 떄문에 타입변환을 해야한다.
-						int memberIDX = Integer.parseInt(memberList.get(num-1).get("member_idx").toString());
+			int num = sc.nextInt();
+			// pk값인 member_id값으로 가져온다.
+			// 인덱스번호를 맞추기위해 -1로 맞춘다.
+			// <String, Object>>로 객체로 받았기 떄문에 타입변환을 해야한다.
+			int memberIDX = Integer.parseInt(memberList.get(num-1).get("member_idx").toString());
 	
 						
 			
