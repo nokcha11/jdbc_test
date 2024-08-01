@@ -139,7 +139,7 @@ public class MemberDAO {
 		}
 	
 	// 3. 회원정보 삭제
-	public int deleteMember(int memberIDX, String updateName) { 
+	public int deleteMember(int memberIDX) { 
 		int resultChk = 0;
 		
 		// 데이터 접속
@@ -160,13 +160,12 @@ public class MemberDAO {
 		try {
 			// 쿼리 작성해서 입력
 			String sql = "delete from tb_member_info\r\n"
-					+ "where member_name = ?;";
+					+ "where member_idx = ?;";
 			
 			
 			// ?값 입력
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, updateName); // 위에 선언한 변수명 맞추기
-			pstmt.setInt(2, memberIDX);
+			pstmt.setInt(1, memberIDX); // 위에 선언한 변수명 맞추기
 			
 			
 			resultChk = pstmt.executeUpdate();
@@ -209,59 +208,59 @@ public class MemberDAO {
 			System.out.println("접속 실패");
 			e.printStackTrace();
 		}
-				try {
-					
-					String sql = "SELECT member_idx,\r\n"
-							+ "	   member_id,\r\n"
-							+ "	   member_pw,\r\n"
-							+ "	   member_name,\r\n"
-							+ "	   member_birth,\r\n"
-							+ "	   member_phone,\r\n"
-							+ "	   member_email\r\n"
-							+ "FROM `tb_member_info`\r\n"
-							+ "where member_name = ?;";
-					
-					// 물음표값
-					pstmt = conn.prepareStatement(sql);
-					pstmt.setString(1, name);
-					rs = pstmt.executeQuery();
-					
-					while(rs.next()) {
-						// 조회결과 HashMap에 추가
-						HashMap<String, Object> rsMap = new HashMap<String, Object>();
-						rsMap.put("member_idx", rs.getString("member_idx"));
-						rsMap.put("member_id", rs.getString("member_id"));
-						rsMap.put("member_pw", rs.getString("member_pw"));
-						rsMap.put("member_name", rs.getString("member_name"));
-						rsMap.put("member_birth", rs.getString("member_birth"));
-						rsMap.put("member_phone", rs.getString("member_phone"));
-						rsMap.put("member_email", rs.getString("member_email"));
-						
-						memberList.add(rsMap);
+		try {
+			
+			String sql = "SELECT member_idx,\r\n"
+					+ "	   member_id,\r\n"
+					+ "	   member_pw,\r\n"
+					+ "	   member_name,\r\n"
+					+ "	   member_birth,\r\n"
+					+ "	   member_phone,\r\n"
+					+ "	   member_email\r\n"
+					+ "FROM `tb_member_info`\r\n"
+					+ "where member_name = ?;";
+			
+			// 물음표값
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, name);
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				// 조회결과 HashMap에 추가
+				HashMap<String, Object> rsMap = new HashMap<String, Object>();
+				rsMap.put("member_idx", rs.getString("member_idx"));
+				rsMap.put("member_id", rs.getString("member_id"));
+				rsMap.put("member_pw", rs.getString("member_pw"));
+				rsMap.put("member_name", rs.getString("member_name"));
+				rsMap.put("member_birth", rs.getString("member_birth"));
+				rsMap.put("member_phone", rs.getString("member_phone"));
+				rsMap.put("member_email", rs.getString("member_email"));
+				
+				memberList.add(rsMap);
 
-					}
-					
-				}catch (SQLException e) {
-					
-					System.out.println("error :" + e);
-				}finally {
-					try {
-						if(rs != null) {
-							rs.close();
-						}
-						
-						if(pstmt != null) {
-							pstmt.close();
-						}
-						if(conn != null && conn.isClosed()) {
-							conn.close();
-						}
-					
-					}catch(SQLException e) {
-						e.printStackTrace();
-					}
+			}
+			
+		}catch (SQLException e) {
+			
+			System.out.println("error :" + e);
+		}finally {
+			try {
+				if(rs != null) {
+					rs.close();
 				}
-				return memberList;
+				
+				if(pstmt != null) {
+					pstmt.close();
+				}
+				if(conn != null && conn.isClosed()) {
+					conn.close();
+				}
+			
+			}catch(SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return memberList;
 		}
 	
 	// 5. 회원정보 전체 출력
@@ -280,56 +279,56 @@ public class MemberDAO {
 				System.out.println("접속 실패");
 				e.printStackTrace();
 			}
-					try {
-						
-						String sql = "SELECT member_idx,\r\n"
-								+ "	   member_id,\r\n"
-								+ "	   member_pw,\r\n"
-								+ "	   member_name,\r\n"
-								+ "	   member_birth,\r\n"
-								+ "	   member_phone,\r\n"
-								+ "	   member_email\r\n"
-								+ "FROM `tb_member_info`;";
-						
-						// ?의 물음표값
-						pstmt = conn.prepareStatement(sql);
-						rs = pstmt.executeQuery();
-						
-						while(rs.next()) {
-							// 조회결과 HashMap에 추가
-							HashMap<String, Object> rsMap = new HashMap<String, Object>();
-							rsMap.put("member_idx", rs.getString("member_idx"));
-							rsMap.put("member_id", rs.getString("member_id"));
-							rsMap.put("member_pw", rs.getString("member_pw"));
-							rsMap.put("member_name", rs.getString("member_name"));
-							rsMap.put("member_birth", rs.getString("member_birth"));
-							rsMap.put("member_phone", rs.getString("member_phone"));
-							rsMap.put("member_email", rs.getString("member_email"));
-							
-							memberList.add(rsMap);
+			try {
+				
+				String sql = "SELECT member_idx,\r\n"
+						+ "	   member_id,\r\n"
+						+ "	   member_pw,\r\n"
+						+ "	   member_name,\r\n"
+						+ "	   member_birth,\r\n"
+						+ "	   member_phone,\r\n"
+						+ "	   member_email\r\n"
+						+ "FROM `tb_member_info`;";
+				
+				// ?의 물음표값
+				pstmt = conn.prepareStatement(sql);
+				rs = pstmt.executeQuery();
+				
+				while(rs.next()) {
+					// 조회결과 HashMap에 추가
+					HashMap<String, Object> rsMap = new HashMap<String, Object>();
+					rsMap.put("member_idx", rs.getString("member_idx"));
+					rsMap.put("member_id", rs.getString("member_id"));
+					rsMap.put("member_pw", rs.getString("member_pw"));
+					rsMap.put("member_name", rs.getString("member_name"));
+					rsMap.put("member_birth", rs.getString("member_birth"));
+					rsMap.put("member_phone", rs.getString("member_phone"));
+					rsMap.put("member_email", rs.getString("member_email"));
+					
+					memberList.add(rsMap);
 
-						}
-						
-					}catch (SQLException e) {
-						
-						System.out.println("error :" + e);
-					}finally {
-						try {
-							if(rs != null) {
-								rs.close();
-							}
-							
-							if(pstmt != null) {
-								pstmt.close();
-							}
-							if(conn != null && conn.isClosed()) {
-								conn.close();
-							}
-						
-						}catch(SQLException e) {
-							e.printStackTrace();
-						}
+				}
+				
+			}catch (SQLException e) {
+				
+				System.out.println("error :" + e);
+			}finally {
+				try {
+					if(rs != null) {
+						rs.close();
 					}
-					return memberList;
+					
+					if(pstmt != null) {
+						pstmt.close();
+					}
+					if(conn != null && conn.isClosed()) {
+						conn.close();
+					}
+				
+				}catch(SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			return memberList;
 		}
 }

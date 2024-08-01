@@ -387,50 +387,50 @@ public class StudentDAO {
 		int resultChk = 0;
 		
 		// 데이터 접속
-				try {
-					Class.forName(driver);
-					conn = DriverManager.getConnection(db_url, "root", "1234");
-					if(conn != null) {
-						System.out.println("접속성공");
-					}
-				}catch(ClassNotFoundException e) {
-					System.out.println("드라이버 로드 실패");
-					e.printStackTrace();
-				}catch(SQLException e) {
-					System.out.println("접속 실패");
-					e.printStackTrace();
-				}
+		try {
+			Class.forName(driver);
+			conn = DriverManager.getConnection(db_url, "root", "1234");
+			if(conn != null) {
+				System.out.println("접속성공");
+			}
+		}catch(ClassNotFoundException e) {
+			System.out.println("드라이버 로드 실패");
+			e.printStackTrace();
+		}catch(SQLException e) {
+			System.out.println("접속 실패");
+			e.printStackTrace();
+		}
+		
+		try {
+			// 쿼리 작성해서 입력
+			String sql = "delete from tb_student_info\r\n"
+					+ "where student_idx = ?;";
+			
+			
+			// ?값 입력
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, studentIdx); // 위에 선언한 변수명 맞추기
+			
+			
+			resultChk = pstmt.executeUpdate();
+			
+		}catch (SQLException e) {
+			
+			System.out.println("error :" + e);
+		}finally {
+			try {
 				
-				try {
-					// 쿼리 작성해서 입력
-					String sql = "delete from tb_student_info\r\n"
-							+ "where student_idx = ?;";
-					
-					
-					// ?값 입력
-					pstmt = conn.prepareStatement(sql);
-					pstmt.setInt(1, studentIdx); // 위에 선언한 변수명 맞추기
-					
-					
-					resultChk = pstmt.executeUpdate();
-					
-				}catch (SQLException e) {
-					
-					System.out.println("error :" + e);
-				}finally {
-					try {
-						
-						if(pstmt != null) {
-							pstmt.close();
-						}
-						if(conn != null && conn.isClosed()) {
-							conn.close();
-						}
-					
-					}catch(SQLException e) {
-						e.printStackTrace();
-					}
+				if(pstmt != null) {
+					pstmt.close();
 				}
+				if(conn != null && conn.isClosed()) {
+					conn.close();
+				}
+			
+			}catch(SQLException e) {
+				e.printStackTrace();
+			}
+		}
 		
 		return resultChk;
 	}

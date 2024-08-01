@@ -144,12 +144,15 @@ public class MemberServiceImpl implements MemberService {
 			System.out.println("수정할 회원명의 순번을 입력하세요>>>>");
 			// 몇번째 순번 입력받을지
 			int num = sc.nextInt();
+			
 			// pk값인 member_id값으로 가져온다.
 			// 인덱스번호를 맞추기위해 -1로 맞춘다.
 			// <String, Object>>로 객체로 받았기 떄문에 타입변환을 해야한다.
+			
 			int memberIDX = Integer.parseInt(memberList.get(num-1).get("member_idx").toString());
 			System.out.println("변경할 회원명을 입력하세요>>>>>");
 			sc.nextLine();
+			
 			String updateName = sc.nextLine();
 			
 			// DB에서 수정
@@ -164,7 +167,7 @@ public class MemberServiceImpl implements MemberService {
 		
 		// 3. 회원정보 삭제
 		public void deleteMember() {
-System.out.println("회원명을 입력하세요>>>>>>>");
+			System.out.println("회원명을 입력하세요>>>>>>>");
 			
 			sc.nextLine();
 			String name = sc.nextLine();
@@ -182,20 +185,19 @@ System.out.println("회원명을 입력하세요>>>>>>>");
 				System.out.print(memberList.get(i).get("member_phone")+"\t");
 				System.out.println(memberList.get(i).get("member_email")+"\t");
 			}
-			System.out.println("수정할 회원명의 순번을 입력하세요>>>>");
+			System.out.println("삭제할 회원명의 순번을 입력하세요>>>>");
 			// 몇번째 순번 입력받을지
 						int num = sc.nextInt();
 						// pk값인 member_id값으로 가져온다.
 						// 인덱스번호를 맞추기위해 -1로 맞춘다.
 						// <String, Object>>로 객체로 받았기 떄문에 타입변환을 해야한다.
 						int memberIDX = Integer.parseInt(memberList.get(num-1).get("member_idx").toString());
-						System.out.println("변경할 회원명을 입력하세요>>>>>");
-						sc.nextLine();
-						String updateName = sc.nextLine();
+	
+						
 			
 			// DB에서 삭제
 			int resultChk = 0;
-			resultChk = mDAO.deleteMember(memberIDX, updateName); // 할당받은 변수넣어준다. DAO에서는 다른 변수명으로해도 무방
+			resultChk = mDAO.deleteMember(memberIDX); // 할당받은 변수넣어준다. DAO에서는 다른 변수명으로해도 무방
 			if(resultChk >0 ) {
 				System.out.println("회원정보가 삭제되었습니다.");
 			} else {
