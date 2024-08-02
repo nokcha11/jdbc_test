@@ -103,22 +103,23 @@ public class StudentDAO {
 		
 		try {
 			// 쿼리 작성해서 입력
-			String sql = "INSERT INTO `jdbc_test`.`tb_student_score`\r\n"
-					+ "(\r\n"
-					+ "`score_season`,\r\n"
-					+ "`score_semester`,\r\n"
-					+ "`score_exam_type`,\r\n"
-					+ "`score_subject`,\r\n"
-					+ "`score_point`,\r\n"
+			String sql = "INSERT INTO jdbc_test.tb_student_score\r\n"
+					+ "(student_idx,\r\n"
+					+ "score_season,\r\n"
+					+ "score_semester,\r\n"
+					+ "score_exam_type,\r\n"
+					+ "score_subject,\r\n"
+					+ "score_point\r\n)"
 					+ "VALUES\r\n"
-					+ "(?,?,?,?,?);";
+					+ "(?,?,?,?,?,?);";
 			
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, paramMap.get("score_season").toString());
-			pstmt.setInt(2,Integer.parseInt(paramMap.get("score_semester").toString()) );
-			pstmt.setString(3, paramMap.get("score_exam_type").toString());
-			pstmt.setString(4, paramMap.get("score_subject").toString());
-			pstmt.setInt(5,Integer.parseInt(paramMap.get("score_point").toString()) );
+			pstmt.setInt(1,Integer.parseInt(paramMap.get("studentIdx").toString()) );
+			pstmt.setString(2, paramMap.get("season").toString());
+			pstmt.setInt(3,Integer.parseInt(paramMap.get("semester").toString()) );
+			pstmt.setString(4, paramMap.get("examType").toString());
+			pstmt.setString(5, paramMap.get("subject").toString());
+			pstmt.setInt(6,Integer.parseInt(paramMap.get("point").toString()) );
 			
 			
 			resultChk = pstmt.executeUpdate();
@@ -163,12 +164,20 @@ public class StudentDAO {
 		}
 		try {
 			
-			String sql = "SELECT student_name,\r\n"
-					+ "		student_grade,\r\n"
-					+ "		student_school,\r\n"
-					+ "		student_addr,\r\n"
-					+ "		student_phone\r\n"
-					+ "FROM tb_student_info;";
+			String sql = "SELECT student.student_idx,\r\n"
+					+ "		student.student_name,\r\n"
+					+ "		student.student_grade,\r\n"
+					+ "		student.student_school,\r\n"
+					+ "		student.student_addr,\r\n"
+					+ "		student.student_phone,\r\n"
+					+ "        score.score_season,\r\n"
+					+ "		score.score_semester,\r\n"
+					+ "		score.score_exam_type,\r\n"
+					+ "		score.score_subject,\r\n"
+					+ "		score.score_point\r\n"
+					+ "FROM tb_student_info student\r\n"
+					+ "left join tb_student_score score\r\n"
+					+ "on student.student_idx = score.student_idx;";
 			
 			// ?의 물음표값
 			pstmt = conn.prepareStatement(sql);
@@ -177,11 +186,18 @@ public class StudentDAO {
 			while(rs.next()) {
 				// 조회결과 HashMap에 추가
 				HashMap<String, Object> rsMap = new HashMap<String, Object>();
+				// 키, 컬럼명
 				rsMap.put("student_name", rs.getString("student_name"));
 				rsMap.put("student_grade", rs.getString("student_grade"));
 				rsMap.put("student_school", rs.getString("student_school"));
 				rsMap.put("student_addr", rs.getString("student_addr"));
 				rsMap.put("student_phone", rs.getString("student_phone"));
+				
+				rsMap.put("score_season", rs.getString("score_season"));
+				rsMap.put("score_semester", rs.getString("score_semester"));
+				rsMap.put("score_exam_type", rs.getString("score_exam_type"));
+				rsMap.put("score_subject", rs.getString("score_subject"));
+				rsMap.put("score_point", rs.getString("score_point"));
 				
 				studentList.add(rsMap);
 
@@ -237,7 +253,7 @@ public class StudentDAO {
 					+ "		student_addr,\r\n"
 					+ "		student_phone\r\n"
 					+ "FROM tb_student_info\r\n"
-					+ "where student_name = ?;";
+					+ "where student_name like concat('%', ?, '%');";
 			
 			// 물음표값
 			pstmt = conn.prepareStatement(sql);
@@ -281,6 +297,92 @@ public class StudentDAO {
 		
 		return studentList;
 	}
+	
+	// 학생 + 성적 이름으로 학생 정보 조회
+		public List<HashMap<String, Object>> printSearchScore(String studentName){
+			List<HashMap<String, Object>> studentList = new ArrayList();
+			
+			try {
+				Class.forName(driver);
+				conn = DriverManager.getConnection(db_url, "root", "1234");
+				if(conn != null) {
+					System.out.println("접속성공");
+				}
+			}catch(ClassNotFoundException e) {
+				System.out.println("드라이버 로드 실패");
+				e.printStackTrace();
+			}catch(SQLException e) {
+				System.out.println("접속 실패");
+				e.printStackTrace();
+			}
+			try {
+				
+				String sql = "SELECT student.student_idx,\r\n"
+						+ "		student.student_name,\r\n"
+						+ "		student.student_grade,\r\n"
+						+ "		student.student_school,\r\n"
+						+ "		student.student_addr,\r\n"
+						+ "		student.student_phone,\r\n"
+						+ "        score.score_season,\r\n"
+						+ "		score.score_semester,\r\n"
+						+ "		score.score_exam_type,\r\n"
+						+ "		score.score_subject,\r\n"
+						+ "		score.score_point,\r\n"
+						+ "        score.score_idx\r\n"
+						+ "FROM tb_student_info student\r\n"
+						+ "left join tb_student_score score\r\n"
+						+ "on student.student_idx = score.student_idx\r\n"
+						+ "where student_name like concat('%', ?, '%');";
+				
+				// 물음표값
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setString(1, studentName);
+				rs = pstmt.executeQuery();
+				
+				while(rs.next()) {
+					// 조회결과 HashMap에 추가
+					HashMap<String, Object> rsMap = new HashMap<String, Object>();
+					rsMap.put("student_idx", rs.getString("student_idx"));
+					rsMap.put("student_name", rs.getString("student_name"));
+					rsMap.put("student_grade", rs.getString("student_grade"));
+					rsMap.put("student_school", rs.getString("student_school"));
+					rsMap.put("student_addr", rs.getString("student_addr"));
+					rsMap.put("student_phone", rs.getString("student_phone"));
+					
+					rsMap.put("score_season", rs.getString("score_season"));
+					rsMap.put("score_semester", rs.getString("score_semester"));
+					rsMap.put("score_exam_type", rs.getString("score_exam_type"));
+					rsMap.put("score_subject", rs.getString("score_subject"));
+					rsMap.put("score_point", rs.getString("score_point"));
+					rsMap.put("score_idx", rs.getString("score_idx"));
+					
+					studentList.add(rsMap);
+
+				}
+				
+			}catch (SQLException e) {
+				
+				System.out.println("error :" + e);
+			}finally {
+				try {
+					if(rs != null) {
+						rs.close();
+					}
+					
+					if(pstmt != null) {
+						pstmt.close();
+					}
+					if(conn != null && conn.isClosed()) {
+						conn.close();
+					}
+				
+				}catch(SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			
+			return studentList;
+		}
 	
 	
 	
@@ -376,8 +478,57 @@ public class StudentDAO {
 	}
 	
 	// 학생 성적 수정
-	public int updateScore(HashMap<String, Object> paramMap) {
+	public int updateScore(int scoreIdx, int updateScore) {
 		int resultChk = 0;
+		
+		
+			
+			try {
+				Class.forName(driver);
+				conn = DriverManager.getConnection(db_url, "root", "1234");
+				if(conn != null) {
+					System.out.println("접속성공");
+				}
+			}catch(ClassNotFoundException e) {
+				System.out.println("드라이버 로드 실패");
+				e.printStackTrace();
+			}catch(SQLException e) {
+				System.out.println("접속 실패");
+				e.printStackTrace();
+			}
+			
+			try {
+				// 쿼리 작성해서 입력
+				String sql = "update tb_student_score \r\n"
+						+ "set score_point = ?\r\n"
+						+ "where score_idx = ?;";
+				
+				
+				// ?값 입력
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setInt(1, updateScore); // 위에 선언한 변수명 맞추기
+				pstmt.setInt(2, scoreIdx);
+				
+				resultChk = pstmt.executeUpdate();
+				
+			}catch (SQLException e) {
+				
+				System.out.println("error :" + e);
+			}finally {
+				try {
+					
+					if(pstmt != null) {
+						pstmt.close();
+					}
+					if(conn != null && conn.isClosed()) {
+						conn.close();
+					}
+				
+				}catch(SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			
 		
 		return resultChk;
 	}
