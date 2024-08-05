@@ -784,7 +784,8 @@ public class StudentDAO {
 		}
 		
 		try {
-			String sql = "SELECT COUNT(student_idx) AS cnt FROM tb_student_score\r\n"
+			String sql = "SELECT COUNT(student_idx) AS cnt "
+					+ "FROM tb_student_score\r\n"
 					+ "WHERE student_idx =?;";
 
 			pstmt = conn.prepareStatement(sql);
