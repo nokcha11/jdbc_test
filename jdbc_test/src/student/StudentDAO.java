@@ -590,6 +590,229 @@ public class StudentDAO {
 	public int deleteScore(HashMap<String, Object> paramMap) {
 		int resultChk = 0;
 		
+		// 데이터 접속
+		try {
+			Class.forName(driver);
+			conn = DriverManager.getConnection(db_url, "root", "1234");
+			if(conn != null) {
+				System.out.println("접속성공");
+			}
+		}catch(ClassNotFoundException e) {
+			System.out.println("드라이버 로드 실패");
+			e.printStackTrace();
+		}catch(SQLException e) {
+			System.out.println("접속 실패");
+			e.printStackTrace();
+		}
+		
+		try {
+			// 쿼리 작성해서 입력
+			String sql = "delete from tb_student_score\r\n"
+					+ "where score_season = ?\r\n"
+					+ "and score_semester = ?\r\n"
+					+ "and score_exam_type = ?\r\n"
+					+ "and score_subject = ?\r\n"
+					+ "and student_idx = ?;";
+			
+			
+			// ?값 입력
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1,paramMap.get("season").toString()); // 위에 선언한 변수명 맞추기
+			pstmt.setInt(2,Integer.parseInt(paramMap.get("semester").toString()));
+			pstmt.setString(3,paramMap.get("examType").toString());
+			pstmt.setString(4,paramMap.get("subject").toString());
+			pstmt.setInt(5,Integer.parseInt(paramMap.get("studentIdx").toString()));
+			
+			
+			resultChk = pstmt.executeUpdate();
+			
+		}catch (SQLException e) {
+			
+			System.out.println("error :" + e);
+		}finally {
+			try {
+				
+				if(pstmt != null) {
+					pstmt.close();
+				}
+				if(conn != null && conn.isClosed()) {
+					conn.close();
+				}
+			
+			}catch(SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
 		return resultChk;
 	}
+	
+	// 성적 idx로 삭제
+	public List<HashMap<String, Object>> printSearchScore (int studentIdx) {
+		List<HashMap<String, Object>> scoreList = new ArrayList();
+		
+		// 데이터 접속
+		try {
+			Class.forName(driver);
+			conn = DriverManager.getConnection(db_url, "root", "1234");
+			if(conn != null) {
+				System.out.println("접속성공");
+			}
+		}catch(ClassNotFoundException e) {
+			System.out.println("드라이버 로드 실패");
+			e.printStackTrace();
+		}catch(SQLException e) {
+			System.out.println("접속 실패");
+			e.printStackTrace();
+		}
+		
+		try {
+			
+			String sql = "select score_idx,\r\n"
+					+ "		score_season,\r\n"
+					+ "       score_semester,\r\n"
+					+ "        score_exam_type,\r\n"
+					+ "        score_subject,\r\n"
+					+ "        score_point\r\n"
+					+ "from tb_student_score\r\n"
+					+ "where student_idx = ?;";
+			
+			// 물음표값
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1,studentIdx );
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				// 조회결과 HashMap에 추가
+				HashMap<String, Object> rsMap = new HashMap<String, Object>();
+				rsMap.put("score_idx", rs.getString("score_idx"));
+				rsMap.put("score_season", rs.getString("score_season"));
+				rsMap.put("score_semester", rs.getString("score_semester"));
+				rsMap.put("score_exam_type", rs.getString("score_exam_type"));
+				rsMap.put("score_subject", rs.getString("score_subject"));
+				rsMap.put("score_point", rs.getString("score_point"));
+				
+				scoreList.add(rsMap);
+
+			}
+			
+		}catch (SQLException e) {
+			
+			System.out.println("error :" + e);
+		}finally {
+			try {
+				if(rs != null) {
+					rs.close();
+				}
+				
+				if(pstmt != null) {
+					pstmt.close();
+				}
+				if(conn != null && conn.isClosed()) {
+					conn.close();
+				}
+			
+			}catch(SQLException e) {
+				e.printStackTrace();
+			}
+		}	
+		return scoreList;
+	}
+
+	public int deleteStudentScore(int studentIdx) {
+		
+		int resultChk = 0;
+		
+		try {
+			Class.forName(driver);
+			conn = DriverManager.getConnection(db_url, "root", "1234");
+			if(conn != null) {
+
+			}
+		}catch(ClassNotFoundException e) {
+			System.out.println("드라이버 로드 실패");
+			e.printStackTrace();
+		}catch(SQLException e) {
+			System.out.println("접속 실패");
+			e.printStackTrace();
+		}
+		
+		try {
+			String sql = "DELETE FROM tb_student_score\r\n"
+					+ "WHERE student_idx =?;";
+
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, studentIdx);
+			
+			resultChk = pstmt.executeUpdate();
+			
+		}catch (SQLException e) {
+			
+			System.out.println("error :" + e);
+		}finally {
+			try {
+				if(pstmt != null) {
+					pstmt.close();
+				}
+				if(conn != null && conn.isClosed()) {
+					conn.close();
+				}
+			
+			}catch(SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return resultChk;
+	}
+
+	public int selectStudentScoreCnt(int studentIdx) {
+		int cnt = 0;
+		
+		try {
+			Class.forName(driver);
+			conn = DriverManager.getConnection(db_url, "root", "1234");
+			if(conn != null) {
+
+			}
+		}catch(ClassNotFoundException e) {
+			System.out.println("드라이버 로드 실패");
+			e.printStackTrace();
+		}catch(SQLException e) {
+			System.out.println("접속 실패");
+			e.printStackTrace();
+		}
+		
+		try {
+			String sql = "SELECT COUNT(student_idx) AS cnt FROM tb_student_score\r\n"
+					+ "WHERE student_idx =?;";
+
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, studentIdx);
+			
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				cnt = rs.getInt("cnt");
+			}
+			
+			
+		}catch (SQLException e) {
+			
+			System.out.println("error :" + e);
+		}finally {
+			try {
+				if(pstmt != null) {
+					pstmt.close();
+				}
+				if(conn != null && conn.isClosed()) {
+					conn.close();
+				}
+			
+			}catch(SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return cnt;
+	}	
+				
 }
