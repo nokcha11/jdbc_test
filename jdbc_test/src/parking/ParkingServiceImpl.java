@@ -142,23 +142,30 @@ public class ParkingServiceImpl implements ParkingService{
 		int resultChk = 0;
 		HashMap<String, Object> parkingMap = new HashMap<String, Object>();
 		parkingMap = parkingDAO.selectParkingInfo(location);
-		parkingDAO.insertParkingHistory(location, parkingMap.get("parkingCarNumber").toString(), "O");
-		//출차 이력 등록 End
 		
-		resultChk = parkingDAO.deleteParking(location);
-		
-		
-		
-		// 비교 대상의 데이터 타입이 boolean(true 혹은 false)일 경우,
-		// if (flag == true) 구문 ==> if (flag)와 동일하게 사용 가능
-		// if (flag == false) 구문 ==> if (!flag)와 동일하게 사용 가능
-		
-		if (resultChk > 0) {
-			System.out.println("출차 완료!! 안녕히 가세요.");
-		} else {
+		if (parkingMap.get("parkingCarNumber") == null ) {
 			System.out.println("주차된 차량이 없습니다 !! 안녕히 가세요.");
+			return;
+		} else {
+		
+			parkingDAO.insertParkingHistory(location, parkingMap.get("parkingCarNumber").toString(), "O");
+			//출차 이력 등록 End
+			
+			resultChk = parkingDAO.deleteParking(location);
+		
+		
+		
+			// 비교 대상의 데이터 타입이 boolean(true 혹은 false)일 경우,
+			// if (flag == true) 구문 ==> if (flag)와 동일하게 사용 가능
+			// if (flag == false) 구문 ==> if (!flag)와 동일하게 사용 가능
+			
+			if (resultChk > 0) {
+				System.out.println("출차 완료!! 안녕히 가세요.");
+			} else {
+				System.out.println("주차된 차량이 없습니다 !! 안녕히 가세요.");
+			}
+	
+			}
 		}
-
-	}
 
 }
